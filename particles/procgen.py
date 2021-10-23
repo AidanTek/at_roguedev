@@ -44,13 +44,21 @@ class RectangularRoom:
         )
 
 def place_entities(
-    room: RectangularRoom, dungeon: GameMap, maximum_monsters: int,
+    room: RectangularRoom,
+    dungeon: GameMap,
+    maximum_monsters: int,
+    map_width: int,
+    map_height: int,
 ) -> None:
     number_of_monsters = random.randint(0, maximum_monsters)
 
     for i in range(number_of_monsters):
-        x = random.randint(room.x1 + 1, room.x2 - 1)
-        y = random.randint(room.y1 + 1, room.y2 -1)
+        x = map_width
+        while x == map_width:
+            x = random.randint(room.x1 + 1, room.x2 - 1)
+        y = map_height
+        while y == map_height:
+            y = random.randint(room.y1 + 1, room.y2 -1)
 
         if not any(entity.x == x and entity.y == y for entity in dungeon.entities):
             if random.random() < 0.8:
@@ -118,7 +126,7 @@ def generate_dungeon(
             for x, y in tunnel_between(rooms[-1].center, new_room.center):
                 dungeon.tiles[x, y] = tile_types.floor
 
-        place_entities(new_room, dungeon, max_monsters_per_room)
+        place_entities(new_room, dungeon, max_monsters_per_room, map_width, map_height)
 
         # Finally, append the new room to the list
         rooms.append(new_room)
